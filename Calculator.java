@@ -8,12 +8,39 @@ public class Calculator {
         secNumList = new NumLinkedList();
     }
 
-    public NumLinkedList addTwoNum(String n1, String n2) {
+    public NumLinkedList performCalculation(String n1, String n2, Sign sign) {
         NumLinkedList res = new NumLinkedList();
-        firstNumList.clearList();
-        secNumList.clearList();
-        firstNumList.createListOfDigit(n1);
-        secNumList.createListOfDigit(n2);
+        NumLinkedList firstList = new NumLinkedList();
+        NumLinkedList secondList = new NumLinkedList();
+        firstList.createListOfDigit(n1);
+        secondList.createListOfDigit(n2);
+        if (sign == Sign.MINUS || sign == Sign.PLUS) {
+            secondList.calculateSign(sign);
+            if (firstList.sign == secondList.sign) {
+                res = addTwoNum(firstList, secondList);
+                res.calculateSign(firstList.sign);
+            } else {
+                NumLinkedList biggerNum = CalculateBiggerNumber.getBiggerNumber(firstList, secondList);
+                NumLinkedList smallerNum;
+                if (biggerNum == firstList) {
+                    smallerNum = secondList;
+                } else {
+                    smallerNum = firstList;
+                }
+                res = subtractTwoNum(biggerNum, smallerNum);
+                if (biggerNum.sign == Sign.MINUS) {
+                    res.sign = Sign.MINUS;
+                }
+            }
+        } else {
+
+        }
+
+        return res;
+    }
+
+    private NumLinkedList addTwoNum(NumLinkedList firstNumList, NumLinkedList secNumList) {
+        NumLinkedList res = new NumLinkedList();
         Node pt1 = firstNumList.tail;
         Node pt2 = secNumList.tail;
         byte remember = 0;
@@ -45,12 +72,8 @@ public class Calculator {
         return res;
     }
 
-    public NumLinkedList subtractTwoNum(String n1, String n2) {
+    private NumLinkedList subtractTwoNum(NumLinkedList firstNumList, NumLinkedList secNumList) {
         NumLinkedList res = new NumLinkedList();
-        firstNumList.clearList();
-        secNumList.clearList();
-        firstNumList.createListOfDigit(n1);
-        secNumList.createListOfDigit(n2);
         Node pt1 = firstNumList.tail;
         Node pt2 = secNumList.tail;
         byte remember = 0;
