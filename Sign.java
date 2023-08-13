@@ -1,7 +1,9 @@
 public enum Sign {
 
     PLUS("+"),
-    MINUS("-");
+    MINUS("-"),
+
+    MULTIPLY("*");
 
     private final String s;
     Sign(String s) {

@@ -37,7 +37,7 @@ public class NumLinkedList {
         }
     }
 
-    private void addDigit(byte val) {
+    public void addDigit(byte val) {
         count++;
         Node node = new Node(val);
         if (head == null) {
@@ -63,6 +63,13 @@ public class NumLinkedList {
         head = node;
     }
 
+    public void removeLeadingZeros() {
+        while (head != null && head.next != null && head.data == 0) {
+            head = head.next;
+            count--;
+        }
+    }
+
     public int getCount() {
         return count;
     }
@@ -71,7 +78,7 @@ public class NumLinkedList {
     public String toString() {
         Node tmp = head;
         StringBuilder stringBuilder = new StringBuilder();
-        if (sign == Sign.MINUS){
+        if (sign == Sign.MINUS) {
             stringBuilder.append(sign);
         }
         while (tmp != null) {

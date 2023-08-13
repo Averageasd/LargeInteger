@@ -14,29 +14,81 @@ public class Calculator {
         NumLinkedList secondList = new NumLinkedList();
         firstList.createListOfDigit(n1);
         secondList.createListOfDigit(n2);
+        NumLinkedList biggerNum = CalculateBiggerNumber.getBiggerNumber(firstList, secondList);
+        NumLinkedList smallerNum;
+        if (biggerNum == firstList) {
+            smallerNum = secondList;
+        } else {
+            smallerNum = firstList;
+        }
         if (sign == Sign.MINUS || sign == Sign.PLUS) {
             secondList.calculateSign(sign);
             if (firstList.sign == secondList.sign) {
                 res = addTwoNum(firstList, secondList);
                 res.calculateSign(firstList.sign);
             } else {
-                NumLinkedList biggerNum = CalculateBiggerNumber.getBiggerNumber(firstList, secondList);
-                NumLinkedList smallerNum;
-                if (biggerNum == firstList) {
-                    smallerNum = secondList;
-                } else {
-                    smallerNum = firstList;
-                }
                 res = subtractTwoNum(biggerNum, smallerNum);
                 if (biggerNum.sign == Sign.MINUS) {
                     res.sign = Sign.MINUS;
                 }
             }
         } else {
-
+            res = multiplyTwoNum(biggerNum, smallerNum);
         }
 
         return res;
+    }
+
+    private NumLinkedList multiplyTwoNum(NumLinkedList firstNumList, NumLinkedList secNumList) {
+
+        // multiply the last node of second list with each node in
+        // by doing this, we will create a new linked list of digits
+        // then we move the pointer of second list and do the same thing.
+        // then we add these linked lists together to get the final result.
+        Node pt = secNumList.tail;
+        NumLinkedList prev = null;
+        NumLinkedList cur = new NumLinkedList();
+        byte remember = 0;
+        int numZerosNeedToAdd = 0;
+        while (pt != null) {
+            remember = 0;
+            cur = new NumLinkedList();
+            Node tmp = firstNumList.tail;
+            byte curDigit = pt.data;
+            while (tmp != null) {
+                byte val = tmp.data;
+                byte res = (byte) (((val * curDigit) + remember) % 10);
+                remember = (byte) (((val * curDigit) + remember) / 10);
+                cur.addFront(res);
+                tmp = tmp.prev;
+            }
+            if (remember > 0) {
+                cur.addFront(remember);
+            }
+
+            for (int i = 0; i < numZerosNeedToAdd; i++) {
+                cur.addDigit((byte) 0);
+            }
+
+            if (prev != null) {
+                cur = addTwoNum(cur, prev);
+            }
+
+            numZerosNeedToAdd += 1;
+            prev = cur;
+            pt = pt.prev;
+        }
+
+        if (firstNumList.sign == secNumList.sign) {
+            cur.sign = Sign.PLUS;
+        } else {
+            if (cur.head.data != 0) {
+                cur.sign = Sign.MINUS;
+            }
+        }
+
+        cur.removeLeadingZeros();
+        return cur;
     }
 
     private NumLinkedList addTwoNum(NumLinkedList firstNumList, NumLinkedList secNumList) {
@@ -53,7 +105,7 @@ public class Calculator {
                 newVal = (byte) (pt1.data + remember);
                 pt1 = pt1.prev;
             } else {
-                newVal = (byte) (pt1.data + pt2.data);
+                newVal = (byte) (pt1.data + pt2.data + remember);
                 pt1 = pt1.prev;
                 pt2 = pt2.prev;
             }
@@ -69,6 +121,7 @@ public class Calculator {
         if (remember == 1) {
             res.addFront(remember);
         }
+        res.removeLeadingZeros();
         return res;
     }
 
@@ -106,9 +159,7 @@ public class Calculator {
             res.addFront(val);
         }
 
-        while (res.head != null && res.head.next != null && res.head.data == 0) {
-            res.head = res.head.next;
-        }
+        res.removeLeadingZeros();
         return res;
     }
 }

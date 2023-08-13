@@ -20,7 +20,6 @@ public class CalculateBiggerNumber {
             digitPt1 = digitPt1.next;
             digitPt2 = digitPt2.next;
         }
-
         return l1;
     }
 }
