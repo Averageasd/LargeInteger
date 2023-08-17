@@ -33,4 +33,4 @@ additional digit with value 0 at the end. If it is the 3rd result linked list, i
 adding cur (1->2->0) and prev (2->4) together using the add algorithm, we have 1->4->4.
 
 # Screenshot:
-![]()
+![](LargeIntegerGif.gif)
